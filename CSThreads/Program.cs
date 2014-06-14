@@ -66,7 +66,7 @@ public class CellProd
     public void ThreadRun()
     {
         for (int looper = 1; looper <= quantity; looper++)
-            cell.WriteToCell(looper);  // "producing"
+            cell.WriteToCell(1);  // "producing"
     }
 }
 
@@ -85,7 +85,7 @@ public class CellCons
         int valReturned;
         for (int looper = 1; looper <= quantity; looper++)
             // Consume the result by placing it in valReturned.
-            valReturned = cell.ReadFromCell();
+            valReturned = cell.ReadFromCell(2);
     }
 }
 
@@ -93,7 +93,7 @@ public class Cell
 {
     int cellContents;         // Cell contents
     bool readerFlag = false;  // State flag
-    public int ReadFromCell()
+    public int ReadFromCell(int n)
     {
         lock (this)   // Enter synchronization block
         {
@@ -113,7 +113,16 @@ public class Cell
                     Console.WriteLine(e);
                 }
             }
-            Console.WriteLine("Consume: {0}", cellContents);
+            if (n > cellContents)
+            {
+                Console.WriteLine("Cannot Consume: {0} CellContents: {1}", n, cellContents);
+            }
+            else
+            {
+                cellContents -= n;
+                //Console.WriteLine("Consume: {0}", cellContents);
+                Console.WriteLine("Consume: {0} CellContents: {1}", n, cellContents);
+            }
             readerFlag = false;    // Reset the state flag to say consuming
             // is done.
             Monitor.Pulse(this);   // Pulse tells Cell.WriteToCell that
@@ -142,8 +151,8 @@ public class Cell
                     Console.WriteLine(e);
                 }
             }
-            cellContents = n;
-            Console.WriteLine("Produce: {0}", cellContents);
+            cellContents += n;
+            Console.WriteLine("Produce: {0} CellContents: {1}", n, cellContents);
             readerFlag = true;    // Reset the state flag to say producing
             // is done
             Monitor.Pulse(this);  // Pulse tells Cell.ReadFromCell that 
