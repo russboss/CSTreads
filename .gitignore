@@ -1,0 +1,18 @@
+# User-specific files
+*.suo
+*.user
+*.sln.docstates
+
+
+# bin folder
+UG_Object_Structure/bin/
+UG_Object_Structure/obj/
+
+*.user
+*.ncb
+Debug/
+Release/
+CodeAnalyst/
+ipch/
+*.sdf
+*.opensdf
